@@ -2,13 +2,14 @@
 <html>
 <head>
   <title>Mahakal Book</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
   <h1>MAHAKAL BOOK</h1>
-  <div class="balance">Balance: ₹<span id="bal">1000</span></div>
+  <div class="balance">₹<span id="bal">1000</span></div>
 </header>
 
 <nav>
@@ -21,14 +22,28 @@
 
 <div class="match">
   <div class="teams">IND vs AUS</div>
-  <button onclick="bet(100)">1.85</button>
-  <button onclick="bet(100)">2.10</button>
+  <div class="odds">
+    <button onclick="openSlip('IND vs AUS', 1.85)">1.85</button>
+    <button onclick="openSlip('IND vs AUS', 2.10)">2.10</button>
+  </div>
 </div>
 
 <div class="match">
   <div class="teams">CSK vs MI</div>
-  <button onclick="bet(100)">1.90</button>
-  <button onclick="bet(100)">2.05</button>
+  <div class="odds">
+    <button onclick="openSlip('CSK vs MI', 1.90)">1.90</button>
+    <button onclick="openSlip('CSK vs MI', 2.05)">2.05</button>
+  </div>
+</div>
+
+<!-- BET SLIP -->
+<div id="slip" class="slip hidden">
+  <h3>Bet Slip</h3>
+  <p id="slipMatch"></p>
+  <p>Odds: <b id="slipOdds"></b></p>
+  <input id="stake" type="number" placeholder="Stake ₹">
+  <button onclick="placeBet()">Place Bet (Demo)</button>
+  <button class="close" onclick="closeSlip()">Close</button>
 </div>
 
 <script src="script.js"></script>
