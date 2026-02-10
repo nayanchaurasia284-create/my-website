@@ -1,72 +1,35 @@
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0b0b0b;
-  color: white;
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial;background:#0b0b0b;color:#fff}
+
+header{
+  background:#111;padding:14px;display:flex;
+  justify-content:space-between;align-items:center;
+  border-bottom:2px solid #e50914
+}
+.balance{color:#0f0;font-weight:bold}
+
+nav{background:#000;padding:10px;text-align:center}
+nav a{color:#fff;margin:0 10px;text-decoration:none}
+
+.title{padding:15px}
+
+.match{
+  background:#1a1a1a;margin:10px;padding:15px;border-radius:8px
+}
+.teams{font-weight:bold;margin-bottom:10px}
+.odds button{
+  padding:10px;margin-right:10px;border:0;border-radius:5px;
+  background:#1db954;color:#000;font-weight:bold
 }
 
-header {
-  background: #111;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid red;
-}
+.center{padding:40px;text-align:center}
+input{display:block;margin:10px auto;padding:10px;width:85%}
+button{padding:10px 18px}
 
-nav {
-  background: #000;
-  padding: 10px;
-  text-align: center;
+/* Bet Slip */
+.slip{
+  position:fixed;bottom:0;left:0;right:0;
+  background:#111;padding:15px;border-top:2px solid #e50914
 }
-
-nav a {
-  color: #fff;
-  margin: 0 10px;
-  text-decoration: none;
-}
-
-.balance {
-  color: #0f0;
-}
-
-.title {
-  padding: 15px;
-}
-
-.match {
-  background: #1a1a1a;
-  margin: 10px;
-  padding: 15px;
-  border-radius: 8px;
-}
-
-.teams {
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.match button {
-  padding: 10px;
-  margin-right: 10px;
-  background: green;
-  border: none;
-  color: white;
-  border-radius: 5px;
-}
-
-.center {
-  text-align: center;
-  padding: 40px;
-}
-
-input {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
-  width: 80%;
-}
-
-button {
-  padding: 10px 20px;
-}
+.hidden{display:none}
+.close{background:#333;color:#fff;margin-left:10px}
