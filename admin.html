@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+<style>
+body{font-family:sans-serif;background:#222;color:white;text-align:center;padding:50px;}
+input{padding:8px;margin:5px;border-radius:6px;border:none;}
+button{padding:8px 15px;border:none;border-radius:6px;background:#ff3c3c;color:white;}
+</style>
+</head>
+<body>
+
+<h2>Admin Panel</h2>
+
+<input type="text" id="user" placeholder="Username"><br>
+<input type="number" id="amount" placeholder="Set Balance"><br>
+<button onclick="update()">Update Balance</button><br><br>
+
+<button onclick="back()">Back</button>
+
+<script>
+function update(){
+let user=document.getElementById("user").value;
+let amt=document.getElementById("amount").value;
+
+if(localStorage.getItem(user)){
+localStorage.setItem(user,amt);
+alert("Balance Updated");
+}else{
+alert("User Not Found");
+}
+}
+
+function back(){
+window.location.href="home.html";
+}
+</script>
+
+</body>
+</html>
