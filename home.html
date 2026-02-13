@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mahakal Dashboard</title>
+<style>
+body{font-family:sans-serif;background:#f4f4f4;padding:20px;}
+.box{background:white;padding:20px;border-radius:12px;text-align:center;}
+button{padding:8px 15px;margin:5px;border:none;border-radius:8px;color:white;}
+.deposit{background:#ff3c3c;}
+.logout{background:#555;}
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>Welcome <span id="user"></span></h2>
+<h3>Balance: ₹ <span id="bal"></span></h3>
+<button class="deposit" onclick="deposit()">Deposit Demo</button>
+<button onclick="goAdmin()">Admin Panel</button>
+<button class="logout" onclick="logout()">Logout</button>
+</div>
+
+<script>
+let user=localStorage.getItem("user");
+document.getElementById("user").innerText=user;
+
+function loadBalance(){
+let bal=localStorage.getItem(user);
+document.getElementById("bal").innerText=bal;
+}
+loadBalance();
+
+function deposit(){
+let bal=parseInt(localStorage.getItem(user));
+bal+=100;
+localStorage.setItem(user,bal);
+loadBalance();
+}
+
+function logout(){
+localStorage.removeItem("user");
+window.location.href="index.html";
+}
+
+function goAdmin(){
+window.location.href="admin.html";
+}
+</script>
+
+</body>
+</html>
