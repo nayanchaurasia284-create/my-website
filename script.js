@@ -1,131 +1,180 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-canvas.width = canvas.clientWidth;
-canvas.height = canvas.clientHeight;
-
-let balance = parseFloat(localStorage.getItem('balance')) || 1000;
-let multiplier = 1.1; // start from 1.1
-let running = false;
-let crashPoint = 0;
-let betAmount = 0;
-let x = 0;
-let points = [];
-let planeTrail = [];
-
-document.getElementById('balance').innerText = balance.toFixed(2);
-
-const takeoffSound = document.getElementById('takeoff');
-const crashSound = document.getElementById('crash');
-
-document.getElementById('startBtn').addEventListener('click', startGame);
-document.getElementById('cashBtn').addEventListener('click', cashout);
-
-function startGame() {
-    if (running) return;
-
-    betAmount = parseFloat(document.getElementById('bet').value);
-    if (betAmount > balance || betAmount <= 0) return;
-
-    balance -= betAmount;
-    updateBalance();
-    multiplier = 1.1; // reset start multiplier
-
-    // Crash logic based on requested percentages
-    let chance = Math.random();
-    if (chance < 0.85) { 
-        crashPoint = Math.random() * (1.95 - 1.1) + 1.1; // 85% ≤ 1.95
-    } else if (chance < 0.95) {
-        crashPoint = Math.random() * (3 - 1.95) + 1.95; // 10% ≤ 3
-    } else {
-        crashPoint = Math.random() * 3 + 3; // 5% > 3
+class AviatorGame {
+    constructor() {
+        this.canvas = document.getElementById('gameCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.balance = 1000;
+        this.betAmount = 100;
+        this.multiplier = 1;
+        this.gameState = 'waiting'; // waiting, betting, flying, crashed
+        this.history = [];
+        this.planeX = 50;
+        this.planeY = 300;
+        
+        this.init();
     }
-
-    running = true;
-    x = 0;
-    points = [];
-    planeTrail = [];
-    takeoffSound.play();
-    requestAnimationFrame(drawGraph);
-}
-
-function drawGraph() {
-    if (!running) return;
-
-    // 2x slow multiplier growth
-    multiplier += 0.0015;
-
-    x += 3;
-    let oscillation = Math.sin(x * 0.05) * 20; // plane up-down
-    let newY = canvas.height - Math.log(multiplier + 1) * 120 + oscillation;
-
-    // restrict plane inside canvas
-    if(newY < 50) newY = 50;
-    if(newY > canvas.height - 30) newY = canvas.height - 30;
-
-    points.push({x: x, y: newY});
-    planeTrail.push({x: x, y: newY});
-    if (planeTrail.length > 30) planeTrail.shift();
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // draw curved line
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = "#00ff00";
-    ctx.beginPath();
-    ctx.moveTo(0, canvas.height - 50);
-    for (let i = 1; i < points.length; i++) {
-        let midX = (points[i-1].x + points[i].x)/2;
-        let midY = (points[i-1].y + points[i].y)/2;
-        ctx.quadraticCurveTo(points[i-1].x, points[i-1].y, midX, midY);
+    
+    init() {
+        this.resizeCanvas();
+        window.addEventListener('resize', () => this.resizeCanvas());
+        
+        document.getElementById('betAmount').addEventListener('input', (e) => {
+            this.betAmount = parseInt(e.target.value) || 100;
+        });
+        
+        document.getElementById('startBtn').addEventListener('click', () => this.placeBet());
+        document.getElementById('cashoutBtn').addEventListener('click', () => this.cashout());
+        
+        this.gameLoop();
     }
-    ctx.strokeStyle = "#00ff00";
-    ctx.lineWidth = 3;
-    ctx.stroke();
-    ctx.shadowBlur = 0;
-
-    // plane trail
-    planeTrail.forEach((p,i) => {
-        ctx.fillStyle = `rgba(0,255,0,${i/planeTrail.length})`;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y-5, 4, 0, Math.PI*2);
-        ctx.fill();
-    });
-
-    // plane icon
-    ctx.fillStyle = "white";
-    ctx.font = "20px Arial";
-    ctx.fillText("✈", points[points.length-1].x, points[points.length-1].y - 10);
-
-    // multiplier display
-    ctx.fillStyle = (Math.floor(multiplier*100) % 2 === 0) ? "white" : "lime";
-    ctx.font = "25px Arial";
-    ctx.fillText(multiplier.toFixed(2)+"x", 10, 30);
-
-    // crash logic
-    if (multiplier >= crashPoint){
-        running = false;
-        // small upward jump on crash
-        points[points.length-1].y -= 15;
-        ctx.fillStyle = "red";
-        ctx.beginPath();
-        ctx.arc(points[points.length-1].x, points[points.length-1].y, 15, 0, Math.PI*2);
-        ctx.fill();
-        crashSound.play();
-        return;
+    
+    resizeCanvas() {
+        const rect = this.canvas.getBoundingClientRect();
+        this.canvas.width = rect.width;
+        this.canvas.height = rect.height;
     }
-
-    requestAnimationFrame(drawGraph);
-}
-
-function cashout() {
-    if (running) {
-        balance += (multiplier * betAmount);
-        updateBalance();
-        running = false;
-    }
-}
-
-function updateBalance() {
-    document.getElementById('balance').innerText = balance.toFixed(2);
-    localStorage.setItem('balance', balance);
+    
+    placeBet() {
+        if (this.betAmount > this.balance) {
+            alert('Insufficient balance!');
+            return;
         }
+        this.gameState = 'betting';
+        document.getElementById('status').textContent = 'Game starting...';
+        setTimeout(() => this.startFlight(), 3000);
+    }
+    
+    startFlight() {
+        this.balance -= this.betAmount;
+        this.multiplier = 1.00;
+        this.planeX = 50;
+        this.planeY = this.canvas.height - 100;
+        this.gameState = 'flying';
+        document.getElementById('cashoutBtn').disabled = false;
+        this.updateUI();
+    }
+    
+    cashout() {
+        const winnings = this.betAmount * this.multiplier;
+        this.balance += winnings;
+        this.gameState = 'crashed';
+        this.addToHistory(this.multiplier.toFixed(2) + 'x');
+        document.getElementById('status').textContent = `Cashed out at ${this.multiplier.toFixed(2)}x! Won $${winnings.toFixed(0)}`;
+        document.getElementById('cashoutBtn').disabled = true;
+        setTimeout(() => this.nextRound(), 3000);
+    }
+    
+    nextRound() {
+        this.gameState = 'waiting';
+        document.getElementById('status').textContent = 'Place your bet for next round!';
+        this.updateUI();
+    }
+    
+    updateGame() {
+        if (this.gameState === 'flying') {
+            this.multiplier += 0.05;
+            this.planeX += 3;
+            this.planeY -= 0.5;
+            
+            // Random crash (1-100x)
+            if (Math.random() < 0.015 && this.multiplier > 1.5) {
+                this.crash();
+                return;
+            }
+            
+            if (this.planeX > this.canvas.width) {
+                this.cashout();
+            }
+        }
+    }
+    
+    crash() {
+        this.gameState = 'crashed';
+        document.getElementById('status').textContent = `💥 Crashed at ${this.multiplier.toFixed(2)}x!`;
+        document.getElementById('cashoutBtn').disabled = true;
+        this.addToHistory(this.multiplier.toFixed(2) + 'x');
+        setTimeout(() => this.nextRound(), 2000);
+    }
+    
+    addToHistory(multiplier) {
+        this.history.unshift(multiplier);
+        if (this.history.length > 10) this.history.pop();
+        const list = document.getElementById('historyList');
+        list.innerHTML = this.history.map(m => `<span class="history-item">${m}</span>`).join('');
+    }
+    
+    updateUI() {
+        document.getElementById('balance').textContent = this.balance.toFixed(0);
+        document.querySelector('.multiplier').textContent = this.multiplier.toFixed(2) + 'x';
+    }
+    
+    gameLoop() {
+        this.updateGame();
+        this.draw();
+        this.updateUI();
+        requestAnimationFrame(() => this.gameLoop());
+    }
+    
+    draw() {
+        // Clear canvas
+        this.ctx.fillStyle = '#87CEEB';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Clouds
+        this.ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        for (let i = 0; i < 5; i++) {
+            this.ctx.beginPath();
+            this.ctx.arc(100 + i * 200 + Math.sin(Date.now() * 0.001 + i) * 20, 80 + i * 20, 30, 0, Math.PI * 2);
+            this.ctx.arc(130 + i * 200 + Math.sin(Date.now() * 0.001 + i) * 20, 70 + i * 20, 40, 0, Math.PI * 2);
+            this.ctx.arc(160 + i * 200 + Math.sin(Date.now() * 0.001 + i) * 20, 85 + i * 20, 25, 0, Math.PI * 2);
+            this.ctx.fill();
+        }
+        
+        // Ground
+        const gradient = this.ctx.createLinearGradient(0, this.canvas.height - 100, 0, this.canvas.height);
+        gradient.addColorStop(0, '#98D8C8');
+        gradient.addColorStop(1, '#F0E68C');
+        this.ctx.fillStyle = gradient;
+        this.ctx.fillRect(0, this.canvas.height - 100, this.canvas.width, 100);
+        
+        // Plane
+        if (this.gameState === 'flying' || this.gameState === 'betting') {
+            this.ctx.save();
+            this.ctx.translate(this.planeX, this.planeY);
+            this.ctx.rotate(Math.sin(Date.now() * 0.005) * 0.1);
+            
+            // Plane body
+            this.ctx.fillStyle = '#ff4444';
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, -15);
+            this.ctx.lineTo(40, 0);
+            this.ctx.lineTo(0, 15);
+            this.ctx.closePath();
+            this.ctx.fill();
+            
+            // Wings
+            this.ctx.fillStyle = '#cc0000';
+            this.ctx.fillRect(-5, -8, 15, 16);
+            
+            // Window
+            this.ctx.fillStyle = '#87CEEB';
+            this.ctx.beginPath();
+            this.ctx.arc(15, 0, 6, 0, Math.PI * 2);
+            this.ctx.fill();
+            
+            this.ctx.restore();
+        }
+        
+        // Multiplier text
+        this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        this.ctx.font = 'bold 48px Arial';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText(`${this.multiplier.toFixed(2)}x`, this.canvas.width / 2, 80);
+        
+        this.ctx.fillStyle = 'white';
+        this.ctx.font = 'bold 36px Arial';
+        this.ctx.fillText(`${this.multiplier.toFixed(2)}x`, this.canvas.width / 2, 78);
+    }
+}
+
+// Start game
+const game = new AviatorGame();
