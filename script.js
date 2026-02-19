@@ -4,7 +4,7 @@ canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
 
 let balance = parseFloat(localStorage.getItem('balance')) || 1000;
-let multiplier = 0.01;
+let multiplier = 1.1; // start from 1.1
 let running = false;
 let crashPoint = 0;
 let betAmount = 0;
@@ -28,14 +28,16 @@ function startGame() {
 
     balance -= betAmount;
     updateBalance();
-    multiplier = 0.01; // reset multiplier
+    multiplier = 1.1; // reset start multiplier
 
-    // Ultra-real crash logic
+    // Crash logic based on requested percentages
     let chance = Math.random();
-    if (chance < 0.1) { 
-        crashPoint = Math.random() * 2 + 1;  // Rarely up to 3x
+    if (chance < 0.85) { 
+        crashPoint = Math.random() * (1.95 - 1.1) + 1.1; // 85% ≤ 1.95
+    } else if (chance < 0.95) {
+        crashPoint = Math.random() * (3 - 1.95) + 1.95; // 10% ≤ 3
     } else {
-        crashPoint = Math.random() * 0.5 + 0.01; // Mostly below 0.5
+        crashPoint = Math.random() * 3 + 3; // 5% > 3
     }
 
     running = true;
@@ -49,18 +51,24 @@ function startGame() {
 function drawGraph() {
     if (!running) return;
 
-    // 4x slower multiplier growth
-    multiplier += 0.000125; // very slow
+    // 2x slow multiplier growth
+    multiplier += 0.0015;
 
     x += 3;
-    let newY = canvas.height - Math.log(multiplier + 1) * 120;
+    let oscillation = Math.sin(x * 0.05) * 20; // plane up-down
+    let newY = canvas.height - Math.log(multiplier + 1) * 120 + oscillation;
+
+    // restrict plane inside canvas
+    if(newY < 50) newY = 50;
+    if(newY > canvas.height - 30) newY = canvas.height - 30;
+
     points.push({x: x, y: newY});
     planeTrail.push({x: x, y: newY});
     if (planeTrail.length > 30) planeTrail.shift();
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // draw curve
+    // draw curved line
     ctx.shadowBlur = 15;
     ctx.shadowColor = "#00ff00";
     ctx.beginPath();
@@ -96,6 +104,8 @@ function drawGraph() {
     // crash logic
     if (multiplier >= crashPoint){
         running = false;
+        // small upward jump on crash
+        points[points.length-1].y -= 15;
         ctx.fillStyle = "red";
         ctx.beginPath();
         ctx.arc(points[points.length-1].x, points[points.length-1].y, 15, 0, Math.PI*2);
@@ -118,4 +128,4 @@ function cashout() {
 function updateBalance() {
     document.getElementById('balance').innerText = balance.toFixed(2);
     localStorage.setItem('balance', balance);
-}
+        }
