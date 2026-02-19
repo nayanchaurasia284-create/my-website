@@ -50,7 +50,7 @@ function drawGraph() {
     if (!running) return;
 
     // 4x slower multiplier growth
-    multiplier += 0.00015; // very slow
+    multiplier += 0.000125; // very slow
 
     x += 3;
     let newY = canvas.height - Math.log(multiplier + 1) * 120;
