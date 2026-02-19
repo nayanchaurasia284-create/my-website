@@ -4,7 +4,7 @@ canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
 
 let balance = parseFloat(localStorage.getItem('balance')) || 1000;
-let multiplier = 0.01;  // start from 0.01
+let multiplier = 0.01;
 let running = false;
 let crashPoint = 0;
 let betAmount = 0;
@@ -29,7 +29,15 @@ function startGame() {
     balance -= betAmount;
     updateBalance();
     multiplier = 0.01; // reset multiplier
-    crashPoint = Math.random() * 3 + 1.5; // max 3x crash
+
+    // Ultra-real crash logic
+    let chance = Math.random();
+    if (chance < 0.1) { 
+        crashPoint = Math.random() * 2 + 1;  // Rarely up to 3x
+    } else {
+        crashPoint = Math.random() * 0.5 + 0.01; // Mostly below 0.5
+    }
+
     running = true;
     x = 0;
     points = [];
@@ -41,14 +49,13 @@ function startGame() {
 function drawGraph() {
     if (!running) return;
 
-    // multiplier growth slower
-    multiplier += 0.003; // ~3x slower than before
+    // 4x slower multiplier growth
+    multiplier += 0.00075; // very slow
 
     x += 3;
     let newY = canvas.height - Math.log(multiplier + 1) * 120;
     points.push({x: x, y: newY});
     planeTrail.push({x: x, y: newY});
-
     if (planeTrail.length > 30) planeTrail.shift();
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -111,4 +118,4 @@ function cashout() {
 function updateBalance() {
     document.getElementById('balance').innerText = balance.toFixed(2);
     localStorage.setItem('balance', balance);
-                }
+}
