@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aviator Ultra Real PWA</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+<div class="balance">Balance: <span id="balance">1000</span> Coins</div>
+<div class="bet-area">
+    Bet: <input type="number" id="bet" value="100" min="1">
+    <button id="startBtn">Start</button>
+    <button id="cashBtn">Cashout</button>
+</div>
+<canvas id="gameCanvas"></canvas>
+
+<audio id="takeoff" src="sounds/takeoff.mp3"></audio>
+<audio id="crash" src="sounds/crash.mp3"></audio>
+
+<script src="script.js"></script>
+<script>
+if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+</body>
+</html>
