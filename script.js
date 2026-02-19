@@ -3,8 +3,8 @@ const ctx = canvas.getContext('2d');
 canvas.width = canvas.clientWidth;
 canvas.height = canvas.clientHeight;
 
-let balance = parseInt(localStorage.getItem('balance')) || 1000;
-let multiplier = 1.0;
+let balance = parseFloat(localStorage.getItem('balance')) || 1000;
+let multiplier = 0.01;  // start from 0.01
 let running = false;
 let crashPoint = 0;
 let betAmount = 0;
@@ -12,7 +12,7 @@ let x = 0;
 let points = [];
 let planeTrail = [];
 
-document.getElementById('balance').innerText = balance;
+document.getElementById('balance').innerText = balance.toFixed(2);
 
 const takeoffSound = document.getElementById('takeoff');
 const crashSound = document.getElementById('crash');
@@ -23,13 +23,13 @@ document.getElementById('cashBtn').addEventListener('click', cashout);
 function startGame() {
     if (running) return;
 
-    betAmount = parseInt(document.getElementById('bet').value);
+    betAmount = parseFloat(document.getElementById('bet').value);
     if (betAmount > balance || betAmount <= 0) return;
 
     balance -= betAmount;
     updateBalance();
-    multiplier = 1.0;
-    crashPoint = Math.random() * 4 + 1.5;
+    multiplier = 0.01; // reset multiplier
+    crashPoint = Math.random() * 3 + 1.5; // max 3x crash
     running = true;
     x = 0;
     points = [];
@@ -41,7 +41,9 @@ function startGame() {
 function drawGraph() {
     if (!running) return;
 
-    multiplier += 0.03;
+    // multiplier growth slower
+    multiplier += 0.003; // ~3x slower than before
+
     x += 3;
     let newY = canvas.height - Math.log(multiplier + 1) * 120;
     points.push({x: x, y: newY});
@@ -51,6 +53,7 @@ function drawGraph() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // draw curve
     ctx.shadowBlur = 15;
     ctx.shadowColor = "#00ff00";
     ctx.beginPath();
@@ -65,6 +68,7 @@ function drawGraph() {
     ctx.stroke();
     ctx.shadowBlur = 0;
 
+    // plane trail
     planeTrail.forEach((p,i) => {
         ctx.fillStyle = `rgba(0,255,0,${i/planeTrail.length})`;
         ctx.beginPath();
@@ -72,14 +76,17 @@ function drawGraph() {
         ctx.fill();
     });
 
+    // plane icon
     ctx.fillStyle = "white";
     ctx.font = "20px Arial";
     ctx.fillText("✈", points[points.length-1].x, points[points.length-1].y - 10);
 
-    ctx.fillStyle = (Math.floor(multiplier*10) % 2 === 0) ? "white" : "lime";
+    // multiplier display
+    ctx.fillStyle = (Math.floor(multiplier*100) % 2 === 0) ? "white" : "lime";
     ctx.font = "25px Arial";
     ctx.fillText(multiplier.toFixed(2)+"x", 10, 30);
 
+    // crash logic
     if (multiplier >= crashPoint){
         running = false;
         ctx.fillStyle = "red";
@@ -95,13 +102,13 @@ function drawGraph() {
 
 function cashout() {
     if (running) {
-        balance += Math.floor(multiplier * betAmount);
+        balance += (multiplier * betAmount);
         updateBalance();
         running = false;
     }
 }
 
 function updateBalance() {
-    document.getElementById('balance').innerText = balance;
+    document.getElementById('balance').innerText = balance.toFixed(2);
     localStorage.setItem('balance', balance);
-}
+                }
