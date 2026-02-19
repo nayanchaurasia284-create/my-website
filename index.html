@@ -8,13 +8,18 @@
 <link rel="manifest" href="manifest.json">
 </head>
 <body>
-<div class="balance">Balance: <span id="balance">100</span> Coins</div>
+
+<div class="top-bar">
+    <div class="title">AVIATOR</div>
+    <div class="balance">Balance: <span id="balance">1000</span> Coins</div>
+</div>
+
+<canvas id="gameCanvas"></canvas>
+
 <div class="bet-area">
-    Bet: <input type="number" id="bet" value="100" min="1">
-    <button id="startBtn">Start</button>
+    <button id="startBtn">Place Bet</button>
     <button id="cashBtn">Cashout</button>
 </div>
-<canvas id="gameCanvas"></canvas>
 
 <audio id="takeoff" src="sounds/takeoff.mp3"></audio>
 <audio id="crash" src="sounds/crash.mp3"></audio>
