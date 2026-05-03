@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Kalyaan — Refer & Earn</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* HERO */
+  .ref-hero {
+    background: linear-gradient(135deg, #1a0a2e 0%, #0d1a2e 60%, #0a1a10 100%);
+    padding: 28px 20px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .ref-hero::before {
+    content: '👥';
+    position: absolute;
+    font-size: 120px;
+    opacity: 0.05;
+    right: -20px;
+    top: -20px;
+  }
+  .ref-hero-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 900;
+    background: linear-gradient(90deg, var(--gold), var(--violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+  }
+  .ref-hero-sub { font-family: var(--font-ui); font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+  .ref-earnings-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+  .ref-earn-box {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    text-align: center;
+  }
+  .reb-val { font-family: var(--font-ui); font-size: 22px; font-weight: 700; color: var(--gold); }
+  .reb-label { font-family: var(--font-ui); font-size: 11px; color: var(--muted); margin-top: 2px; letter-spacing: 0.5px; }
+
+  /* INVITE LINK */
+  .invite-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .invite-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--violet), var(--green));
+  }
+
+  .invite-code-box {
+    background: var(--card2);
+    border: 2px dashed var(--border2);
+    border-radius: var(--radius);
+    padding: 18px;
+    text-align: center;
+    margin-bottom: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .invite-code-box:active { background: var(--card3); }
+  .icb-label { font-family: var(--font-ui); font-size: 11px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+  .icb-code {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: 6px;
+    text-shadow: var(--glow-gold);
+  }
+  .icb-hint { font-family: var(--font-ui); font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+  .link-row {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .link-text {
+    flex: 1;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--text2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .link-copy {
+    background: var(--violet);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .share-buttons { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .share-btn {
+    padding: 12px 8px;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s;
+  }
+  .share-btn:active { transform: scale(0.94); }
+  .share-btn .si { font-size: 20px; }
+  .sb-wa { background: #25D366; color: #fff; }
+  .sb-tg { background: #2AABEE; color: #fff; }
+  .sb-copy { background: var(--card2); border: 1px solid var(--border); color: var(--text); }
+
+  /* COMMISSION LEVELS */
+  .commission-section { padding: 0 16px 16px; }
+  .commission-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+  }
+  .commission-header {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+  }
+  .level-badge {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .lb-1 { background: linear-gradient(135deg, #FFD700, #FFA500); color: #111; box-shadow: 0 0 16px rgba(255,165,0,0.4); }
+  .lb-2 { background: linear-gradient(135deg, #C0C0C0, #A0A0A0); color: #111; box-shadow: 0 0 16px rgba(192,192,192,0.3); }
+  .lb-3 { background: linear-gradient(135deg, #CD7F32, #A0522D); color: #fff; box-shadow: 0 0 16px rgba(205,127,50,0.3); }
+
+  .level-info { flex: 1; }
+  .level-name { font-family: var(--font-ui); font-size: 16px; font-weight: 700; }
+  .level-rate { font-family: var(--font-ui); font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .level-earn { font-family: var(--font-ui); font-size: 18px; font-weight: 700; color: var(--gold); }
+  .level-sub { font-family: var(--font-ui); font-size: 11px; color: var(--muted); }
+
+  .commission-details {
+    padding: 0 16px 16px;
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+  .commission-details.open { display: block; }
+  .cd-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-family: var(--font-ui);
+    font-size: 13px;
+  }
+  .cd-label { color: var(--muted); }
+  .cd-val { font-weight: 700; }
+
+  /* HOW IT WORKS */
+  .how-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 0 16px 16px;
+  }
+  .step-row {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .step-row:last-child { margin-bottom: 0; }
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--red), var(--violet));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .step-text { flex: 1; }
+  .step-title { font-family: var(--font-ui); font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .step-sub { font-family: var(--font-ui); font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* REFERRAL TREE */
+  .tree-section { padding: 0 16px 16px; }
+  .tree-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+
+  .tree-level-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .tree-level-row:last-child { border-bottom: none; }
+  .tree-icon { font-size: 28px; }
+  .tree-info { flex: 1; }
+  .tree-level-name { font-family: var(--font-ui); font-size: 14px; font-weight: 700; }
+  .tree-count { font-family: var(--font-ui); font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .tree-earning { font-family: var(--font-ui); font-size: 16px; font-weight: 700; color: var(--gold); }
+
+  /* MEMBER LIST */
+  .member-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .member-item:last-child { border-bottom: none; }
+  .member-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--red), var(--violet));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-ui);
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .member-info { flex: 1; }
+  .member-name { font-family: var(--font-ui); font-size: 14px; font-weight: 700; }
+  .member-joined { font-family: var(--font-ui); font-size: 11px; color: var(--muted); }
+  .member-earn { font-family: var(--font-ui); font-size: 13px; font-weight: 700; color: var(--gold); }
+
+  /* WITHDRAW COMMISSION */
+  .commission-withdraw-card {
+    background: linear-gradient(135deg, #1a1000, #0d1a0a);
+    border: 1px solid rgba(245,200,66,0.3);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 0 16px 16px;
+    text-align: center;
+  }
+  .cw-amount { font-family: var(--font-display); font-size: 30px; font-weight: 700; color: var(--gold); margin: 10px 0; }
+  .cw-label { font-family: var(--font-ui); font-size: 12px; color: var(--muted); letter-spacing: 1px; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <a href="home.html" style="color:var(--text2);font-size:20px;text-decoration:none;">←</a>
+    <span style="font-family:var(--font-ui);font-size:17px;font-weight:700;">Refer & Earn</span>
+  </div>
+  <div class="balance-pill">💰 <span id="balDisplay">0.00</span></div>
+</div>
+
+<!-- HERO -->
+<div class="ref-hero">
+  <div class="ref-hero-title">Earn With Every Friend!</div>
+  <div class="ref-hero-sub">Invite friends & earn commission on their every bet — forever!</div>
+  <div class="ref-earnings-row">
+    <div class="ref-earn-box">
+      <div class="reb-val" id="totalRefEarnings">₹0</div>
+      <div class="reb-label">Total Earned</div>
+    </div>
+    <div class="ref-earn-box">
+      <div class="reb-val" id="totalReferrals">0</div>
+      <div class="reb-label">Team Members</div>
+    </div>
+    <div class="ref-earn-box">
+      <div class="reb-val" id="pendingComm">₹0</div>
+      <div class="reb-label">Pending</div>
+    </div>
+  </div>
+</div>
+
+<!-- INVITE CARD -->
+<div class="invite-card">
+  <div style="font-family:var(--font-ui);font-size:13px;font-weight:700;margin-bottom:14px;">🎟️ Your Invite Code</div>
+
+  <div class="invite-code-box" onclick="copyCode()">
+    <div class="icb-label">Tap to Copy</div>
+    <div class="icb-code" id="refCodeDisplay">------</div>
+    <div class="icb-hint">Tap code to copy</div>
+  </div>
+
+  <div class="link-row">
+    <span class="link-text" id="refLinkDisplay">https://kalyaan.game/?ref=------</span>
+    <button class="link-copy" onclick="copyLink()">COPY</button>
+  </div>
+
+  <div class="share-buttons">
+    <button class="share-btn sb-wa" onclick="shareWA()">
+      <span class="si">📲</span>WhatsApp
+    </button>
+    <button class="share-btn sb-tg" onclick="shareTG()">
+      <span class="si">✈️</span>Telegram
+    </button>
+    <button class="share-btn sb-copy" onclick="copyLink()">
+      <span class="si">📋</span>Copy Link
+    </button>
+  </div>
+</div>
+
+<!-- COMMISSION WITHDRAW -->
+<div class="commission-withdraw-card">
+  <div class="cw-label">AVAILABLE COMMISSION</div>
+  <div class="cw-amount" id="commBalance">₹0.00</div>
+  <button class="btn btn-gold btn-shine" style="max-width:200px;margin:0 auto;" onclick="withdrawComm()">
+    💰 Withdraw Commission
+  </button>
+</div>
+
+<!-- HOW IT WORKS -->
+<div style="padding:0 16px 16px;">
+  <div class="section-hd">How It Works</div>
+  <div class="how-card">
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-text">
+        <div class="step-title">Share Your Code</div>
+        <div class="step-sub">Share your unique referral code or link with friends via WhatsApp, Telegram, etc.</div>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-text">
+        <div class="step-title">Friend Registers</div>
+        <div class="step-sub">Your friend signs up using your code and gets ₹50 welcome bonus instantly.</div>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-text">
+        <div class="step-title">Earn Commission Forever</div>
+        <div class="step-sub">You earn % commission on every bet your team places — Level 1, 2, and 3!</div>
+      </div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-text">
+        <div class="step-title">Withdraw Anytime</div>
+        <div class="step-sub">Transfer commission to your wallet and withdraw. No limits!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMMISSION LEVELS -->
+<div class="commission-section">
+  <div class="section-hd">Commission Structure</div>
+
+  <!-- LEVEL 1 -->
+  <div class="commission-card">
+    <div class="commission-header" onclick="toggleLevel(1)">
+      <div class="level-badge lb-1">L1</div>
+      <div class="level-info">
+        <div class="level-name">Level 1 — Direct Referrals</div>
+        <div class="level-rate">People you directly invite</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="level-earn" style="color:var(--gold);">3%</div>
+        <div class="level-sub">Per bet</div>
+      </div>
+    </div>
+    <div class="commission-details" id="level-details-1">
+      <div class="cd-row"><span class="cd-label">Commission Rate</span><span class="cd-val c-gold">3% of bet amount</span></div>
+      <div class="cd-row"><span class="cd-label">Your Level 1 Members</span><span class="cd-val" id="l1count">0</span></div>
+      <div class="cd-row"><span class="cd-label">Earned from L1</span><span class="cd-val c-gold" id="l1earn">₹0</span></div>
+      <div class="cd-row"><span class="cd-label">Example</span><span class="cd-val">Friend bets ₹100 → You get ₹3</span></div>
+    </div>
+  </div>
+
+  <!-- LEVEL 2 -->
+  <div class="commission-card">
+    <div class="commission-header" onclick="toggleLevel(2)">
+      <div class="level-badge lb-2">L2</div>
+      <div class="level-info">
+        <div class="level-name">Level 2 — Friend's Friends</div>
+        <div class="level-rate">People invited by your L1</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="level-earn" style="color:var(--text2);">1.5%</div>
+        <div class="level-sub">Per bet</div>
+      </div>
+    </div>
+    <div class="commission-details" id="level-details-2">
+      <div class="cd-row"><span class="cd-label">Commission Rate</span><span class="cd-val" style="color:var(--text2);">1.5% of bet amount</span></div>
+      <div class="cd-row"><span class="cd-label">Your Level 2 Members</span><span class="cd-val" id="l2count">0</span></div>
+      <div class="cd-row"><span class="cd-label">Earned from L2</span><span class="cd-val" style="color:var(--text2);" id="l2earn">₹0</span></div>
+      <div class="cd-row"><span class="cd-label">Example</span><span class="cd-val">L2 bets ₹100 → You get ₹1.5</span></div>
+    </div>
+  </div>
+
+  <!-- LEVEL 3 -->
+  <div class="commission-card">
+    <div class="commission-header" onclick="toggleLevel(3)">
+      <div class="level-badge lb-3">L3</div>
+      <div class="level-info">
+        <div class="level-name">Level 3 — Deep Network</div>
+        <div class="level-rate">People invited by your L2</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="level-earn" style="color:#CD7F32;">0.5%</div>
+        <div class="level-sub">Per bet</div>
+      </div>
+    </div>
+    <div class="commission-details" id="level-details-3">
+      <div class="cd-row"><span class="cd-label">Commission Rate</span><span class="cd-val" style="color:#CD7F32;">0.5% of bet amount</span></div>
+      <div class="cd-row"><span class="cd-label">Your Level 3 Members</span><span class="cd-val" id="l3count">0</span></div>
+      <div class="cd-row"><span class="cd-label">Earned from L3</span><span class="cd-val" style="color:#CD7F32;" id="l3earn">₹0</span></div>
+      <div class="cd-row"><span class="cd-label">Example</span><span class="cd-val">L3 bets ₹100 → You get ₹0.5</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- REFERRAL TREE SUMMARY -->
+<div class="tree-section">
+  <div class="section-hd">Your Team Summary</div>
+  <div class="tree-card">
+    <div class="tree-level-row">
+      <span class="tree-icon">🥇</span>
+      <div class="tree-info">
+        <div class="tree-level-name">Level 1 Team</div>
+        <div class="tree-count" id="l1countTree">0 members</div>
+      </div>
+      <div class="tree-earning" id="l1earnTree">₹0</div>
+    </div>
+    <div class="tree-level-row">
+      <span class="tree-icon">🥈</span>
+      <div class="tree-info">
+        <div class="tree-level-name">Level 2 Team</div>
+        <div class="tree-count" id="l2countTree">0 members</div>
+      </div>
+      <div class="tree-earning" id="l2earnTree">₹0</div>
+    </div>
+    <div class="tree-level-row">
+      <span class="tree-icon">🥉</span>
+      <div class="tree-info">
+        <div class="tree-level-name">Level 3 Team</div>
+        <div class="tree-count" id="l3countTree">0 members</div>
+      </div>
+      <div class="tree-earning" id="l3earnTree">₹0</div>
+    </div>
+  </div>
+</div>
+
+<!-- MEMBERS LIST -->
+<div style="padding:0 16px 16px;">
+  <div class="section-hd">Direct Referrals (Level 1)</div>
+  <div class="card" style="padding:0 16px;" id="membersList">
+    <div style="text-align:center;padding:30px;color:var(--muted);font-family:var(--font-ui);">
+      No referrals yet.<br>Share your code to start earning!
+    </div>
+  </div>
+</div>
+
+<!-- BONUS REWARDS -->
+<div style="padding:0 16px 16px;">
+  <div class="section-hd">Milestone Bonuses</div>
+  <div class="card">
+    <div id="milestoneList"></div>
+  </div>
+</div>
+
+<div class="bottom-spacer"></div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span>Home</a>
+  <a class="nav-item" href="wallet.html"><span class="nav-icon">💳</span>Wallet</a>
+  <a class="nav-item active" href="referral.html"><span class="nav-icon">👥</span>Refer</a>
+  <a class="nav-item" href="vip.html"><span class="nav-icon">👑</span>VIP</a>
+  <a class="nav-item" href="profile.html"><span class="nav-icon">👤</span>Profile</a>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+const WHATSAPP_NUM = '918517923368';
+let user = JSON.parse(localStorage.getItem('kalyaan_user') || 'null');
+if (!user) window.location.href = 'index.html';
+
+const refData = JSON.parse(localStorage.getItem('k_referrals') || '{"members":[],"commissions":{"l1":0,"l2":0,"l3":0},"pending":0}');
+
+const MILESTONES = [
+  { count: 1,  bonus: 50,   label: 'First Referral',   reward: '₹50 Bonus' },
+  { count: 5,  bonus: 200,  label: '5 Referrals',      reward: '₹200 Bonus' },
+  { count: 10, bonus: 500,  label: '10 Referrals',     reward: '₹500 Bonus' },
+  { count: 25, bonus: 1500, label: '25 Referrals',     reward: '₹1500 Bonus' },
+  { count: 50, bonus: 5000, label: '50 Referrals',     reward: '₹5000 Bonus' },
+];
+
+function init() {
+  document.getElementById('balDisplay').textContent = user.balance.toFixed(2);
+
+  const code = user.uid.slice(-6).toUpperCase();
+  const link = `https://kalyaan.game/?ref=${code}`;
+  document.getElementById('refCodeDisplay').textContent = code;
+  document.getElementById('refLinkDisplay').textContent = link;
+
+  const total = refData.commissions.l1 + refData.commissions.l2 + refData.commissions.l3;
+  document.getElementById('totalRefEarnings').textContent = '₹' + total.toFixed(0);
+  document.getElementById('totalReferrals').textContent = refData.members.length;
+  document.getElementById('pendingComm').textContent = '₹' + (refData.pending || 0).toFixed(0);
+  document.getElementById('commBalance').textContent = '₹' + (refData.pending || 0).toFixed(2);
+
+  // Level stats
+  const l1 = refData.members.filter(m => m.level === 1);
+  const l2 = refData.members.filter(m => m.level === 2);
+  const l3 = refData.members.filter(m => m.level === 3);
+
+  ['l1count','l2count','l3count'].forEach((id, i) => {
+    const counts = [l1.length, l2.length, l3.length];
+    document.getElementById(id).textContent = counts[i];
+  });
+
+  ['l1earn','l2earn','l3earn'].forEach((id, i) => {
+    const earns = [refData.commissions.l1, refData.commissions.l2, refData.commissions.l3];
+    document.getElementById(id).textContent = '₹' + earns[i].toFixed(2);
+  });
+
+  ['l1countTree','l2countTree','l3countTree'].forEach((id, i) => {
+    const counts = [l1.length, l2.length, l3.length];
+    document.getElementById(id).textContent = counts[i] + ' members';
+  });
+
+  ['l1earnTree','l2earnTree','l3earnTree'].forEach((id, i) => {
+    const earns = [refData.commissions.l1, refData.commissions.l2, refData.commissions.l3];
+    document.getElementById(id).textContent = '₹' + earns[i].toFixed(0);
+  });
+
+  renderMembers(l1);
+  renderMilestones();
+}
+
+function renderMembers(members) {
+  const list = document.getElementById('membersList');
+  if (!members.length) return;
+  list.innerHTML = members.map(m => `
+    <div class="member-item">
+      <div class="member-avatar">${m.name.charAt(0)}</div>
+      <div class="member-info">
+        <div class="member-name">${m.name}</div>
+        <div class="member-joined">Joined ${new Date(m.date).toLocaleDateString('en-IN')}</div>
+      </div>
+      <div class="member-earn">₹${(m.commission || 0).toFixed(0)}</div>
+    </div>
+  `).join('');
+}
+
+function renderMilestones() {
+  const reached = refData.members.length;
+  const el = document.getElementById('milestoneList');
+  el.innerHTML = MILESTONES.map(m => {
+    const done = reached >= m.count;
+    return `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
+        <div style="font-size:24px;">${done ? '✅' : '🎯'}</div>
+        <div style="flex:1;">
+          <div style="font-family:var(--font-ui);font-size:14px;font-weight:700;color:${done?'var(--green)':'var(--text)'};">${m.label}</div>
+          <div style="font-family:var(--font-ui);font-size:12px;color:var(--muted);">Invite ${m.count} friends</div>
+        </div>
+        <div style="font-family:var(--font-ui);font-size:14px;font-weight:700;color:var(--gold);">${m.reward}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleLevel(n) {
+  const el = document.getElementById(`level-details-${n}`);
+  el.classList.toggle('open');
+}
+
+function copyCode() {
+  const code = user.uid.slice(-6).toUpperCase();
+  navigator.clipboard.writeText(code).then(() => showToast('Referral code copied! 📋', 'success')).catch(() => showToast('Code: ' + code, 'info'));
+}
+
+function copyLink() {
+  const code = user.uid.slice(-6).toUpperCase();
+  const link = `https://kalyaan.game/?ref=${code}`;
+  navigator.clipboard.writeText(link).then(() => showToast('Invite link copied! 🔗', 'success')).catch(() => showToast('Link copied!', 'success'));
+}
+
+function shareWA() {
+  const code = user.uid.slice(-6).toUpperCase();
+  const link = `https://kalyaan.game/?ref=${code}`;
+  const msg = `🎮 *KALYAAN - India's Best Prediction Game!*\n\n💰 Win Real Money Every Minute!\n🎁 Get ₹50 FREE on Signup!\n\n👉 Join Now: ${link}\n\n🔑 Use my code: *${code}*\n\nFast Withdrawals · Daily Bonus · VIP Rewards 🚀`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+function shareTG() {
+  const code = user.uid.slice(-6).toUpperCase();
+  const link = `https://kalyaan.game/?ref=${code}`;
+  const msg = `🎮 KALYAAN - Win Real Money! Join with my code ${code} and get ₹50 FREE! ${link}`;
+  window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+function withdrawComm() {
+  const pending = refData.pending || 0;
+  if (pending < 50) { showToast('Minimum ₹50 commission required to withdraw', 'error'); return; }
+  user.balance += pending;
+  refData.pending = 0;
+  localStorage.setItem('kalyaan_user', JSON.stringify(user));
+  localStorage.setItem('k_referrals', JSON.stringify(refData));
+  document.getElementById('balDisplay').textContent = user.balance.toFixed(2);
+  document.getElementById('commBalance').textContent = '₹0.00';
+  document.getElementById('pendingComm').textContent = '₹0';
+  showToast(`₹${pending} commission added to wallet! 💰`, 'success');
+}
+
+function showToast(msg, type='info') {
+  const icons = { success:'✅', error:'❌', info:'💡' };
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+init();
+</script>
+</body>
+</html>
